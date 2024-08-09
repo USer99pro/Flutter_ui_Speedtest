@@ -1,16 +1,24 @@
 # speed_test
 
-A new Flutter project.
 
-## Getting Started
+### Package Install 
+```
+// install package 
+flutter pub get 
+```
+```
+file pubspec.yaml
 
-This project is a starting point for a Flutter application.
+dependencies:
+  flutter:
+    sdk: flutter
+  percent_indicator: ^4.2.3
+  syncfusion_flutter_gauges: ^26.2.8
+  flutter_internet_speed_test: ^1.5.0
+  shared_preferences: ^2.1.2
+```
+- [syncfusion_flutter_gauges: ^26.2.8]([https://docs.flutter.dev/get-started/codelab](https://pub.dev/packages/syncfusion_flutter_gauges/install))
+- [percent_indicator: ^4.2.3]([https://docs.flutter.dev/cookbook](https://pub.dev/packages/percent_indicator/install))
+- [flutter_internet_speed_test 1.5.0](https://pub.dev/packages/flutter_internet_speed_test)
+- [shared_preferences: ^2.1.2](https://pub.dev/packages/shared_preferences)
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
