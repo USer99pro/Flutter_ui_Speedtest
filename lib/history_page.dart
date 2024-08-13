@@ -1,9 +1,9 @@
-// history_page.dart
-
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'speed_test_result.dart'; // Import the SpeedTestResult class
+import 'speed_test_result.dart';
+import 'speed_test_ui.dart';
 
 class HistoryPage extends StatefulWidget {
   @override
@@ -42,8 +42,7 @@ class _HistoryPageState extends State<HistoryPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Speed Test History'),
-        backgroundColor: const Color.fromARGB(255, 10, 75, 95),
-        
+        backgroundColor: Color.fromARGB(255, 73, 110, 222),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete),
@@ -57,7 +56,7 @@ class _HistoryPageState extends State<HistoryPage> {
               child: Text(
                 'No history available.',
                 style: TextStyle(
-                  color: Color.fromARGB(255, 0, 0, 0),
+                  color: const Color.fromARGB(255, 0, 0, 0),
                   fontSize: 16,
                 ),
               ),

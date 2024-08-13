@@ -1,12 +1,11 @@
-
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:flutter_internet_speed_test/flutter_internet_speed_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'speed_test_result.dart';
 import 'history_page.dart';
+import 'iplookup.dart';
+import 'speed_test_result.dart';
 
 class SpeedTestUi extends StatefulWidget {
   const SpeedTestUi({super.key});
@@ -34,7 +33,7 @@ class _SpeedTestUiState extends State<SpeedTestUi> {
       backgroundColor: const Color.fromARGB(255, 10, 35, 73),
       appBar: AppBar(
         title: const Text("Speed Test"),
-        backgroundColor: const Color.fromARGB(255, 91, 140, 214),
+        backgroundColor: Colors.blueAccent,
         elevation: 0,
         centerTitle: true,
         actions: [
@@ -47,143 +46,196 @@ class _SpeedTestUiState extends State<SpeedTestUi> {
               );
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => IPLookupPage()),
+              );
+            },
+          ),
         ],
       ),
-      body: Column(children: [
-        const Text(
-          "Process",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 10),
-        LinearPercentIndicator(
-          percent: displayProgress / 100.00,
-          progressColor: Colors.orange,
-          lineHeight: 18,
-          center: Text(
-            displayProgress.toStringAsFixed(1) + "%",
-            style: const TextStyle(color: Colors.black, fontSize: 14),
-          ),
-          barRadius: const Radius.circular(10),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Downloads : ${_downloadRate.toStringAsFixed(2)} ${UnitText}",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    "Uploads : ${_uploadRate.toStringAsFixed(2)} ${UnitText}",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
               ),
-            ],
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        SfRadialGauge(
-          axes: [
-            RadialAxis(
-              radiusFactor: 0.85,
-              minorTicksPerInterval: 1,
-              tickOffset: 3,
-              useRangeColorForAxis: true,
-              interval: 4,
-              minimum: 0,
-              maximum: 25,
-              axisLabelStyle: const GaugeTextStyle(
-                color: Colors.white,
-              ),
-              ranges: [
-                GaugeRange(
-                  color: const Color.fromARGB(255, 30, 244, 255),
-                  startValue: 0,
-                  endValue: 24,
-                  startWidth: 5,
-                  endWidth: 10,
-                )
-              ],
-              pointers: [
-                NeedlePointer(
-                  value: displayrate,
-                  enableAnimation: true,
-                  needleColor: Colors.orange,
-                  tailStyle: const TailStyle(
-                      color: Colors.white,
-                      borderWidth: 0.1,
-                      borderColor: Colors.blue),
-                  knobStyle: const KnobStyle(
-                    color: Colors.white,
-                    borderColor: Colors.red,
-                    borderWidth: 0.01,
-                  ),
+              child: Text(
+                'Menu',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
                 ),
-              ],
-              annotations: [
-                GaugeAnnotation(
-                  widget: Container(
-                    child: Text(
-                      displayrate.toStringAsFixed(2) + UnitText,
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.speed),
+              title: const Text('Speed Test'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.search),
+              title: const Text('IP Lookup'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => IPLookupPage()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.history),
+              title: const Text('History'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HistoryPage()),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+      body: Column(
+        children: [
+          const Text(
+            "Process",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+          LinearPercentIndicator(
+            percent: displayProgress / 100.00,
+            progressColor: Colors.orange,
+            lineHeight: 18,
+            center: Text(
+              displayProgress.toStringAsFixed(1) + "%",
+              style: const TextStyle(color: Colors.black, fontSize: 14),
+            ),
+            barRadius: const Radius.circular(10),
+          ),
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Downloads : ${_downloadRate.toStringAsFixed(2)} ${UnitText}",
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 25,
                       ),
                     ),
-                  ),
-                  angle: 90,
-                  positionFactor: 0.6,
+                    Text(
+                      "Uploads : ${_uploadRate.toStringAsFixed(2)} ${UnitText}",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ],
-            )
-          ],
-        ),
-        const SizedBox(height: 10),
-        Text(
-          isServerSelectionInProcess
-              ? "Server Selection In Progress..."
-              : 'IP ${_ip ?? '__'} | ASN:${_asn ?? '__'} | ISP:${_isp ?? '__'}',
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 10),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 23, 243, 255)),
-          onPressed: () {
-            testingFunction();
-          },
-          child: const Text(
-            'Start Testing',
-            style: TextStyle(
-              color: Colors.white,
             ),
           ),
-        ),
-      ]),
+          const SizedBox(height: 10),
+          SfRadialGauge(
+            axes: [
+              RadialAxis(
+                radiusFactor: 0.85,
+                minorTicksPerInterval: 1,
+                tickOffset: 3,
+                useRangeColorForAxis: true,
+                interval: 4,
+                minimum: 0,
+                maximum: 25,
+                axisLabelStyle: const GaugeTextStyle(
+                  color: Colors.white,
+                ),
+                ranges: [
+                  GaugeRange(
+                    color: const Color.fromARGB(255, 30, 244, 255),
+                    startValue: 0,
+                    endValue: 24,
+                    startWidth: 5,
+                    endWidth: 10,
+                  )
+                ],
+                pointers: [
+                  NeedlePointer(
+                    value: displayrate,
+                    enableAnimation: true,
+                    needleColor: Colors.orange,
+                    tailStyle: const TailStyle(
+                        color: Colors.white,
+                        borderWidth: 0.1,
+                        borderColor: Colors.blue),
+                    knobStyle: const KnobStyle(
+                      color: Colors.white,
+                      borderColor: Colors.red,
+                      borderWidth: 0.01,
+                    ),
+                  ),
+                ],
+                annotations: [
+                  GaugeAnnotation(
+                    widget: Container(
+                      child: Text(
+                        displayrate.toStringAsFixed(2) + UnitText,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                        ),
+                      ),
+                    ),
+                    angle: 90,
+                    positionFactor: 0.6,
+                  ),
+                ],
+              )
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            isServerSelectionInProcess
+                ? "Server Selection In Progress..."
+                : 'IP ${_ip ?? '__'} | ASN:${_asn ?? '__'} | ISP:${_isp ?? '__'}',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 23, 243, 255)),
+            onPressed: () {
+              testingFunction();
+            },
+            child: const Text(
+              'Start Testing',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -241,51 +293,43 @@ class _SpeedTestUiState extends State<SpeedTestUi> {
         setState(() {
           isServerSelectionInProcess = true;
         });
-        // Only when you use useFastApi parameter as true(default)
       },
       onDefaultServerSelectionDone: (Client? client) {
         setState(() {
           isServerSelectionInProcess = false;
-          _ip = client!.ip;
-          _asn = client.asn;
-          _isp = client.isp;
-        });
-        // Only when you use useFastApi parameter as true(default)
-      },
-      onDownloadComplete: (TestResult data) {
-        setState(() {
-          UnitText = data.unit == SpeedUnit.kbps ? 'kb/s' : 'Mb/s';
-          _downloadRate = data.transferRate;
-          displayrate = _downloadRate;
-        });
-      },
-      onUploadComplete: (TestResult data) {
-        setState(() {
-          UnitText = data.unit == SpeedUnit.kbps ? 'kb/s' : 'Mb/s';
-          _uploadRate = data.transferRate;
-          displayrate = _uploadRate;
+          _ip = client?.ip;
+          _isp = client?.isp;
+          _asn = client?.asn;
         });
       },
     );
   }
 
   Future<void> saveResult(SpeedTestResult result) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> history = prefs.getStringList('history') ?? [];
-    history.add(jsonEncode(result.toJson()));
-    await prefs.setStringList('history', history);
+    final prefs = await SharedPreferences.getInstance();
+
+    // Convert result to a map or string to store it.
+    String resultString =
+        result.toString(); // Customize this as per your result format
+
+    // Save the result to shared preferences
+    List<String>? results = prefs.getStringList('speedTestResults') ?? [];
+    results.add(resultString);
+
+    await prefs.setStringList('speedTestResults', results);
   }
 
   void resetValue() {
     setState(() {
-      _downloadRate = 0;
-      _uploadRate = 0;
+      displayProgress = 0.0;
+      _downloadRate = 0.0;
+      _uploadRate = 0.0;
       displayrate = 0.0;
       istestingStarted = false;
       _ip = null;
-      _isp = null;
       _asn = null;
-      displayProgress = 0.0;
+      _isp = null;
+      UnitText = '';
     });
   }
 }

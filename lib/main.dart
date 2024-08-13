@@ -1,7 +1,6 @@
-// main.dart
-
 import 'package:flutter/material.dart';
 import 'speed_test_ui.dart';
+import 'iplookup.dart'; 
 
 void main() {
   runApp(MyApp());
