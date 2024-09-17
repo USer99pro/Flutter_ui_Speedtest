@@ -1,3 +1,4 @@
+import 'dart:convert'; // Required for JSON encoding and decoding
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -42,7 +43,7 @@ class _SpeedTestUiState extends State<SpeedTestUi> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => HistoryPage()),
+                MaterialPageRoute(builder: (context) => const HistoryPage()),
               );
             },
           ),
@@ -51,7 +52,7 @@ class _SpeedTestUiState extends State<SpeedTestUi> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => IPLookupPage()),
+                MaterialPageRoute(builder: (context) => const IPLookupPage()),
               );
             },
           ),
@@ -86,7 +87,7 @@ class _SpeedTestUiState extends State<SpeedTestUi> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => IPLookupPage()),
+                  MaterialPageRoute(builder: (context) => const IPLookupPage()),
                 );
               },
             ),
@@ -96,7 +97,7 @@ class _SpeedTestUiState extends State<SpeedTestUi> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HistoryPage()),
+                  MaterialPageRoute(builder: (context) => const HistoryPage()),
                 );
               },
             ),
@@ -119,7 +120,7 @@ class _SpeedTestUiState extends State<SpeedTestUi> {
             progressColor: Colors.orange,
             lineHeight: 18,
             center: Text(
-              displayProgress.toStringAsFixed(1) + "%",
+              "${displayProgress.toStringAsFixed(1)}%",
               style: const TextStyle(color: Colors.black, fontSize: 14),
             ),
             barRadius: const Radius.circular(10),
@@ -134,14 +135,14 @@ class _SpeedTestUiState extends State<SpeedTestUi> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Downloads : ${_downloadRate.toStringAsFixed(2)} ${UnitText}",
+                      "Downloads: ${_downloadRate.toStringAsFixed(2)} $UnitText",
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      "Uploads : ${_uploadRate.toStringAsFixed(2)} ${UnitText}",
+                      "Uploads: ${_uploadRate.toStringAsFixed(2)} $UnitText",
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -287,7 +288,10 @@ class _SpeedTestUiState extends State<SpeedTestUi> {
         });
       },
       onError: (String errorMessage, String speedTestError) {
-        print("error: " + errorMessage + speedTestError);
+        // Show an error message to the user
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $errorMessage $speedTestError")),
+        );
       },
       onDefaultServerSelectionInProgress: () {
         setState(() {
@@ -308,9 +312,8 @@ class _SpeedTestUiState extends State<SpeedTestUi> {
   Future<void> saveResult(SpeedTestResult result) async {
     final prefs = await SharedPreferences.getInstance();
 
-    // Convert result to a map or string to store it.
-    String resultString =
-        result.toString(); // Customize this as per your result format
+    // Convert result to JSON string for storage
+    String resultString = jsonEncode(result.toJson());
 
     // Save the result to shared preferences
     List<String>? results = prefs.getStringList('speedTestResults') ?? [];

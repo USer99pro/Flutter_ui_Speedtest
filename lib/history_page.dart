@@ -1,17 +1,17 @@
-import 'dart:ui';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import 'speed_test_result.dart';
-import 'speed_test_ui.dart';
+import 'speed_test_result.dart'; // Ensure this is your model class
 
 class HistoryPage extends StatefulWidget {
+  const HistoryPage({super.key});
+
   @override
   _HistoryPageState createState() => _HistoryPageState();
 }
 
 class _HistoryPageState extends State<HistoryPage> {
-  List<SpeedTestResult> _history = []; // Use SpeedTestResult as the type
+  List<SpeedTestResult> _history = []; // List to hold SpeedTestResult objects
 
   @override
   void initState() {
@@ -20,21 +20,35 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Future<void> _loadHistory() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> history = prefs.getStringList('history') ?? [];
-    setState(() {
-      _history = history
-          .map((item) => SpeedTestResult.fromJson(jsonDecode(item)))
-          .toList();
-    });
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String>? history = prefs.getStringList(
+          'speedTestResults'); // Updated key to match SpeedTestUi
+      if (history != null) {
+        setState(() {
+          _history = history
+              .map((item) => SpeedTestResult.fromJson(jsonDecode(item)))
+              .toList();
+        });
+      }
+    } catch (e) {
+      // Handle error or show an alert
+      print('Failed to load history: $e');
+    }
   }
 
   Future<void> _clearHistory() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('history');
-    setState(() {
-      _history.clear();
-    });
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs
+          .remove('speedTestResults'); // Updated key to match SpeedTestUi
+      setState(() {
+        _history.clear();
+      });
+    } catch (e) {
+      // Handle error or show an alert
+      print('Failed to clear history: $e');
+    }
   }
 
   @override
@@ -42,7 +56,7 @@ class _HistoryPageState extends State<HistoryPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Speed Test History'),
-        backgroundColor: Color.fromARGB(255, 73, 110, 222),
+        backgroundColor: const Color.fromARGB(255, 73, 110, 222),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete),
@@ -56,7 +70,7 @@ class _HistoryPageState extends State<HistoryPage> {
               child: Text(
                 'No history available.',
                 style: TextStyle(
-                  color: const Color.fromARGB(255, 0, 0, 0),
+                  color: Colors.white, // Updated for better readability
                   fontSize: 16,
                 ),
               ),
@@ -67,7 +81,10 @@ class _HistoryPageState extends State<HistoryPage> {
                 final result = _history[index];
                 return Card(
                   color: const Color.fromARGB(255, 54, 98, 143),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                   child: ListTile(
+                    contentPadding: const EdgeInsets.all(16),
                     title: Text(
                       'Download: ${result.downloadRate.toStringAsFixed(2)} ${result.downloadUnit}',
                       style: const TextStyle(color: Colors.white),

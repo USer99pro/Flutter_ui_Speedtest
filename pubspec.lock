@@ -147,13 +147,21 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_vpn:
+    dependency: "direct main"
+    description:
+      name: flutter_vpn
+      sha256: "9f83b6ddc1cc22e85abe3c9b8a435ca31935ae81fb72b9b5543e3320f84ca021"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.13.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
     source: sdk
     version: "0.0.0"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: b9c29a161230ee03d3ccf545097fccd9b87a5264228c5d348202e0f0c28f9010
@@ -481,10 +489,10 @@ packages:
     dependency: transitive
     description:
       name: vm_service
-      sha256: f652077d0bdf60abe4c1f6377448e8655008eef28f128bc023f7b5e8dfeb48fc
+      sha256: "5c5f338a667b4c644744b661f309fb8080bb94b18a7e91ef1dbd343bed00ed6d"
       url: "https://pub.dev"
     source: hosted
-    version: "14.2.4"
+    version: "14.2.5"
   web:
     dependency: transitive
     description:
